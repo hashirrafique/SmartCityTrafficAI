@@ -4,6 +4,8 @@
 **Course:** AL2002 — Artificial Intelligence Lab
 **Semester:** Spring 2026
 
+![CI](https://github.com/hashirrafique/SmartCityTrafficAI/actions/workflows/ci.yml/badge.svg)
+
 ---
 
 ## 1. Overview
@@ -107,18 +109,18 @@ SmartCityTrafficAI/
 
 ## 5. Installation
 
-Requires **Python 3.9+**.
+Requires **Python 3.9 – 3.12**.
 
 ```bash
-# 1. Unzip the project
-unzip 23F-XXXX_23F-XXXX_23F-XXXX_Project.zip
+# Clone the repository
+git clone https://github.com/hashirrafique/SmartCityTrafficAI.git
 cd SmartCityTrafficAI
 
-# 2. (Optional) create a virtual environment
+# (Optional but recommended) create a virtual environment
 python -m venv .venv
 source .venv/bin/activate     # on Windows: .venv\Scripts\activate
 
-# 3. Install dependencies
+# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -192,3 +194,9 @@ located in `report/Project_Report.docx`.
   Authorization is decided by the rule-based knowledge base.
 - Every public function has a top-of-block docstring describing its
   purpose. Exception handling is added for invalid input throughout.
+
+---
+
+## 10. License
+
+This project is released under the [MIT License](LICENSE).

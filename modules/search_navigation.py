@@ -17,6 +17,7 @@ Central_Junction, West_Terminal, Fire_Station, Industrial_Zone.
 """
 
 import heapq
+import itertools
 from collections import deque
 
 
@@ -172,13 +173,18 @@ def ucs(start, goal):
     """
     Uniform-Cost Search on the weighted graph.
     Returns the same shape of dictionary as bfs.
+
+    A monotonic counter is used as a tiebreaker in the priority queue so
+    that Python never falls through to comparing path lists when two
+    entries share the same cost (which would raise a TypeError).
     """
     _validate_endpoints(start, goal)
-    pq = [(0, start, [start])]
+    counter = itertools.count()          # tiebreaker: unique, always increasing
+    pq = [(0, next(counter), start, [start])]
     best_cost = {start: 0}
     explored = set()
     while pq:
-        cost, node, path = heapq.heappop(pq)
+        cost, _, node, path = heapq.heappop(pq)
         if node == goal:
             return {
                 "algorithm": "UCS",
@@ -197,7 +203,7 @@ def ucs(start, goal):
             new_cost = cost + w
             if new_cost < best_cost.get(neigh, float("inf")):
                 best_cost[neigh] = new_cost
-                heapq.heappush(pq, (new_cost, neigh, path + [neigh]))
+                heapq.heappush(pq, (new_cost, next(counter), neigh, path + [neigh]))
     return {
         "algorithm": "UCS",
         "path": None,
@@ -212,13 +218,17 @@ def astar(start, goal):
     """
     A* search on the weighted graph using the precomputed admissible
     heuristic table. Returns the same dict shape as the other searches.
+
+    A monotonic counter is used as a tiebreaker between entries that have
+    the same f-value so the heap never tries to compare path lists.
     """
     _validate_endpoints(start, goal)
-    pq = [(_heuristic(start, goal), 0, start, [start])]
+    counter = itertools.count()          # tiebreaker
+    pq = [(_heuristic(start, goal), next(counter), 0, start, [start])]
     best_g = {start: 0}
     explored = set()
     while pq:
-        f, g, node, path = heapq.heappop(pq)
+        f, _, g, node, path = heapq.heappop(pq)
         if node == goal:
             return {
                 "algorithm": "A*",
@@ -238,7 +248,7 @@ def astar(start, goal):
             if new_g < best_g.get(neigh, float("inf")):
                 best_g[neigh] = new_g
                 new_f = new_g + _heuristic(neigh, goal)
-                heapq.heappush(pq, (new_f, new_g, neigh, path + [neigh]))
+                heapq.heappush(pq, (new_f, next(counter), new_g, neigh, path + [neigh]))
     return {
         "algorithm": "A*",
         "path": None,
